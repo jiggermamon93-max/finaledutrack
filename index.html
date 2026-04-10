@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>EduTrack – Study Planner & Learning Reminder | SDG 4</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+        }
+        body {
+            background: #f0f4fa;
+            padding: 1rem 1rem 2rem;
+            color: #1e2f3e;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        /* header */
+        .app-header {
+            background: linear-gradient(135deg, #1e4a76, #3b82f6);
+            border-radius: 2rem;
+            padding: 1rem 1.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .app-header h1 {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sdg-badge {
+            background: #ffdd99;
+            color: #1e4a76;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 6px;
+        }
+        /* dashboard card */
+        .dashboard {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1rem;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .dashboard h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .stat-card {
+            background: #eef2ff;
+            flex: 1;
+            padding: 0.6rem;
+            border-radius: 1.2rem;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1e4a76;
+        }
+        .progress-circle {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 6px;
+        }
+        .quick-nav {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .nav-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-btn:active { transform: scale(0.96); background: #1e5f9e; }
+        /* section cards */
+        .card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #dce5f0;
+        }
+        .card-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 5px solid #3b82f6;
+            padding-left: 12px;
+        }
+        .input-group {
+            margin-bottom: 12px;
+        }
+        .input-group label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            display: block;
+            margin-bottom: 4px;
+            color: #2c4c6e;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 1.2rem;
+            border: 1px solid #cbdbe0;
+            background: #fefefe;
+            font-size: 1rem;
+        }
+        button {
+            background: #3b82f6;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 2rem;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            width: 100%;
+            margin-top: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:active { transform: scale(0.97); background: #2563eb; }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #3b82f6;
+            color: #3b82f6;
+        }
+        .task-item {
+            background: #fafcff;
+            padding: 12px;
+            border-radius: 1rem;
+            margin-bottom: 8px;
+            border-left: 4px solid #3b82f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .task-info {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+        .task-check {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        .delete-task {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            width: auto;
+        }
+        .reminder-item {
+            background: #fef7e0;
+            padding: 12px;
+            border-radius: 1rem;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .flex-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .speak-btn {
+            background: #4f9e7a;
+            width: auto;
+            padding: 6px 12px;
+            font-size: 0.7rem;
+        }
+        .progress-bar {
+            background: #e2e8f0;
+            border-radius: 30px;
+            height: 12px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+        .progress-fill {
+            background: #3b82f6;
+            width: 0%;
+            height: 100%;
+            border-radius: 30px;
+        }
+        .quote-text {
+            background: #eef2ff;
+            padding: 16px;
+            border-radius: 1.2rem;
+            font-style: italic;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+        .notification-perm {
+            background: #f1f5f9;
+            padding: 8px;
+            border-radius: 1rem;
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 10px;
+        }
+        @media (max-width: 480px) {
+            body { padding: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="app-header">
+        <h1>📚 EduTrack</h1>
+        <p>Study planner · Learning reminders · SDG 4</p>
+        <div class="sdg-badge">🎓 Quality Education (SDG 4.1 & 4.4)</div>
+    </div>
+
+    <!-- 🏠 DASHBOARD -->
+    <div class="dashboard">
+        <h3>📊 Dashboard</h3>
+        <div class="stats">
+            <div class="stat-card">📋 Pending Tasks<br><span id="pendingCount" class="stat-number">0</span></div>
+            <div class="stat-card">✅ Completed<br><span id="completedCount" class="stat-number">0</span></div>
+            <div class="stat-card">📈 Progress<br><span id="progressPercent" class="stat-number">0%</span></div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="quick-nav">
+            <button class="nav-btn" data-section="taskManager">📝 Task Manager</button>
+            <button class="nav-btn" data-section="reminder">⏰ Reminder</button>
+            <button class="nav-btn" data-section="progress">📊 Progress</button>
+            <button class="nav-btn" data-section="motivation">💡 Motivation</button>
+        </div>
+    </div>
+
+    <!-- 📝 TASK MANAGER -->
+    <div id="taskManager" class="card">
+        <div class="card-title">📝 Study Task Manager</div>
+        <div class="input-group">
+            <label>Subject</label>
+            <input type="text" id="taskSubject" placeholder="e.g., Mathematics">
+        </div>
+        <div class="input-group">
+            <label>Topic / Chapter</label>
+            <input type="text" id="taskTopic" placeholder="e.g., Algebra">
+        </div>
+        <div class="input-group">
+            <label>Deadline (optional)</label>
+            <input type="date" id="taskDeadline">
+        </div>
+        <button id="addTaskBtn">➕ Add Task</button>
+        <div id="taskList" style="margin-top: 16px; max-height: 300px; overflow-y: auto;"></div>
+        <button id="clearAllTasksBtn" class="btn-outline" style="margin-top: 10px;">🗑️ Clear All Tasks</button>
+    </div>
+
+    <!-- ⏰ STUDY REMINDER -->
+    <div id="reminder" class="card">
+        <div class="card-title">⏰ Study Reminder</div>
+        <div class="input-group">
+            <label>Subject to Study</label>
+            <input type="text" id="remindSubject" placeholder="e.g., Science">
+        </div>
+        <div class="input-group">
+            <label>Reminder Time (HH:MM)</label>
+            <input type="time" id="remindTime">
+        </div>
+        <button id="setReminderBtn">🔔 Set Daily Reminder</button>
+        <div id="activeReminder" style="margin-top: 12px; font-size: 0.85rem;"></div>
+        <div class="notification-perm" id="notifyPermMsg">🔔 Browser notifications: Click to enable</div>
+    </div>
+
+    <!-- 📊 PROGRESS TRACKER -->
+    <div id="progress" class="card">
+        <div class="card-title">📊 Learning Progress</div>
+        <div id="progressDetails" style="margin-bottom: 12px;">
+            <p><strong>Overall completion:</strong> <span id="progressDetailPercent">0</span>%</p>
+            <div class="progress-bar"><div class="progress-fill" id="progressDetailFill"></div></div>
+        </div>
+        <div id="topicBreakdown" style="max-height: 200px; overflow-y: auto;"></div>
+    </div>
+
+    <!-- 💡 MOTIVATION + TTS -->
+    <div id="motivation" class="card">
+        <div class="card-title">💡 Motivational Quotes & Tips</div>
+        <div id="quoteText" class="quote-text">"Education is the most powerful weapon which you can use to change the world." – Nelson Mandela</div>
+        <div class="flex-row">
+            <button id="newQuoteBtn" style="flex:1;">✨ New Quote</button>
+            <button id="speakQuoteBtn" class="speak-btn">🔊 Speak</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---------- DATA STORAGE (TinyDB equivalent) ----------
+    let tasks = [];      // each task: { id, subject, topic, deadline, completed }
+    let studyReminder = null; // { subject, time }
+
+    function loadData() {
+        const storedTasks = localStorage.getItem("edutrack_tasks");
+        if(storedTasks) tasks = JSON.parse(storedTasks);
+        else tasks = [];
+
+        const storedReminder = localStorage.getItem("edutrack_reminder");
+        if(storedReminder) studyReminder = JSON.parse(storedReminder);
+        else studyReminder = null;
+
+        renderAll();
+        scheduleReminderCheck();
+    }
+
+    function saveTasks() {
+        localStorage.setItem("edutrack_tasks", JSON.stringify(tasks));
+        renderAll();
+    }
+
+    function saveReminder() {
+        if(studyReminder)
+            localStorage.setItem("edutrack_reminder", JSON.stringify(studyReminder));
+        else
+            localStorage.removeItem("edutrack_reminder");
+        renderReminderUI();
+        scheduleReminderCheck();
+    }
+
+    // add new task
+    function addTask() {
+        const subject = document.getElementById("taskSubject").value.trim();
+        const topic = document.getElementById("taskTopic").value.trim();
+        const deadline = document.getElementById("taskDeadline").value;
+        if(!subject || !topic) {
+            alert("Please fill both Subject and Topic.");
+            return;
+        }
+        const newTask = {
+            id: Date.now(),
+            subject: subject,
+            topic: topic,
+            deadline: deadline || "No deadline",
+            completed: false
+        };
+        tasks.push(newTask);
+        saveTasks();
+        document.getElementById("taskSubject").value = "";
+        document.getElementById("taskTopic").value = "";
+        document.getElementById("taskDeadline").value = "";
+        alert("Task added!");
+    }
+
+    function toggleTaskCompletion(id) {
+        const task = tasks.find(t => t.id === id);
+        if(task) {
+            task.completed = !task.completed;
+            saveTasks();
+        }
+    }
+
+    function deleteTask(id) {
+        tasks = tasks.filter(t => t.id !== id);
+        saveTasks();
+    }
+
+    function clearAllTasks() {
+        if(confirm("Delete ALL study tasks? This cannot be undone.")) {
+            tasks = [];
+            saveTasks();
+        }
+    }
+
+    // progress calculation
+    function getProgressStats() {
+        const total = tasks.length;
+        const completed = tasks.filter(t => t.completed).length;
+        const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+        return { total, completed, percent };
+    }
+
+    // render task list, progress, dashboard
+    function renderTaskList() {
+        const container = document.getElementById("taskList");
+        if(!tasks.length) {
+            container.innerHTML = "<div style='color: gray; text-align:center;'>📭 No tasks. Add your first study task above.</div>";
+            return;
+        }
+        container.innerHTML = tasks.map(task => `
+            <div class="task-item">
+                <div class="task-info">
+                    <strong>📘 ${escapeHtml(task.subject)}</strong> — ${escapeHtml(task.topic)}<br>
+                    <small>📅 ${task.deadline} &nbsp;|&nbsp; ${task.completed ? '✅ Completed' : '⏳ Pending'}</small>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <input type="checkbox" class="task-check" data-id="${task.id}" ${task.completed ? 'checked' : ''}>
+                    <button class="delete-task" data-id="${task.id}">🗑️</button>
+                </div>
+            </div>
+        `).join('');
+
+        document.querySelectorAll('.task-check').forEach(cb => {
+            cb.addEventListener('change', (e) => {
+                const id = parseInt(cb.getAttribute('data-id'));
+                toggleTaskCompletion(id);
+            });
+        });
+        document.querySelectorAll('.delete-task').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = parseInt(btn.getAttribute('data-id'));
+                deleteTask(id);
+            });
+        });
+    }
+
+    function renderProgress() {
+        const { total, completed, percent } = getProgressStats();
+        document.getElementById("progressDetailPercent").innerText = percent;
+        document.getElementById("progressDetailFill").style.width = percent + "%";
+        
+        const breakdown = document.getElementById("topicBreakdown");
+        if(!tasks.length) {
+            breakdown.innerHTML = "<div style='color:gray;'>No topics added yet. Use Task Manager.</div>";
+            return;
+        }
+        breakdown.innerHTML = tasks.map(task => `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #eef2ff;">
+                <span><strong>${escapeHtml(task.subject)}</strong> – ${escapeHtml(task.topic)}</span>
+                <span class="status-badge" style="background:${task.completed ? '#c8f0e1' : '#ffe0cc'}; padding:2px 12px; border-radius:20px;">${task.completed ? '✅ Done' : '📖 Pending'}</span>
+            </div>
+        `).join('');
+    }
+
+    function renderDashboard() {
+        const { total, completed, percent } = getProgressStats();
+        document.getElementById("pendingCount").innerText = total - completed;
+        document.getElementById("completedCount").innerText = completed;
+        document.getElementById("progressPercent").innerText = percent + "%";
+        document.getElementById("progressFill").style.width = percent + "%";
+    }
+
+    // Reminder UI and logic
+    function renderReminderUI() {
+        const container = document.getElementById("activeReminder");
+        if(studyReminder && studyReminder.time && studyReminder.subject) {
+            container.innerHTML = `<div style="background:#eef2ff; padding:10px; border-radius:1rem;">🔔 Active reminder: <strong>${escapeHtml(studyReminder.subject)}</strong> at <strong>${studyReminder.time}</strong> daily. <button id="clearReminderBtn" style="background:#ef4444; width:auto; padding:4px 12px; margin-top:6px;">Remove</button></div>`;
+            const clearBtn = document.getElementById("clearReminderBtn");
+            if(clearBtn) clearBtn.addEventListener("click", () => {
+                studyReminder = null;
+                saveReminder();
+            });
+        } else {
+            container.innerHTML = "<div style='color: gray;'>No active reminder. Set one above.</div>";
+        }
+    }
+
+    function setReminder() {
+        const subject = document.getElementById("remindSubject").value.trim();
+        const time = document.getElementById("remindTime").value;
+        if(!subject || !time) {
+            alert("Please enter subject and time.");
+            return;
+        }
+        studyReminder = { subject: subject, time: time };
+        saveReminder();
+        document.getElementById("remindSubject").value = "";
+        document.getElementById("remindTime").value = "";
+        alert(`Reminder set for ${subject} at ${time}`);
+    }
+
+    // Notification & reminder checker
+    let reminderInterval = null;
+    function requestNotificationPermission() {
+        if ("Notification" in window) {
+            Notification.requestPermission().then(perm => {
+                document.getElementById("notifyPermMsg").innerHTML = perm === "granted" ? "🔔 Notifications enabled ✅" : "🔕 Notifications blocked. Enable in browser settings.";
+            });
+        } else {
+            document.getElementById("notifyPermMsg").innerHTML = "⚠️ Browser doesn't support notifications.";
+        }
+    }
+
+    function sendStudyNotification(subject) {
+        if (!("Notification" in window)) return;
+        if (Notification.permission === "granted") {
+            new Notification("📚 EduTrack Study Reminder", {
+                body: `Time to study ${subject}! Stay focused and reach your goals.`,
+                icon: "https://cdn-icons-png.flaticon.com/512/3096/3096676.png"
+            });
+        }
+    }
+
+    function scheduleReminderCheck() {
+        if(reminderInterval) clearInterval(reminderInterval);
+        reminderInterval = setInterval(() => {
+            if(!studyReminder || !studyReminder.time) return;
+            const now = new Date();
+            const currentTime = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+            if(studyReminder.time === currentTime) {
+                sendStudyNotification(studyReminder.subject);
+                // also show an on-screen alert inside WebView
+                const alertDiv = document.createElement('div');
+                alertDiv.style.position = 'fixed'; alertDiv.style.bottom = '12px'; alertDiv.style.left = '12px';
+                alertDiv.style.right = '12px'; alertDiv.style.background = '#3b82f6'; alertDiv.style.color = 'white';
+                alertDiv.style.padding = '12px'; alertDiv.style.borderRadius = '20px'; alertDiv.style.zIndex = '999';
+                alertDiv.innerText = `📖 Time to study ${studyReminder.subject}!`;
+                document.body.appendChild(alertDiv);
+                setTimeout(() => alertDiv.remove(), 5000);
+            }
+        }, 60000);
+    }
+
+    // ---------- MOTIVATIONAL QUOTES + TTS ----------
+    const quotes = [
+        "Education is the most powerful weapon which you can use to change the world. – Nelson Mandela",
+        "The beautiful thing about learning is that no one can take it away from you. – B.B. King",
+        "Invest in your mind. It will pay the best interest. – Benjamin Franklin",
+        "Success is no accident. It is hard work, perseverance, learning, studying, sacrifice. – Pele",
+        "The capacity to learn is a gift; the ability to learn is a skill; the willingness to learn is a choice. – Brian Herbert",
+        "Don't let what you cannot do interfere with what you can do. – John Wooden",
+        "Learning is a treasure that will follow its owner everywhere. – Chinese Proverb",
+        "Study while others are sleeping; work while others are loafing. – William A. Ward"
+    ];
+    let currentQuote = quotes[0];
+
+    function showRandomQuote() {
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        currentQuote = quotes[randomIndex];
+        document.getElementById("quoteText").innerText = currentQuote;
+    }
+
+    function speakCurrentQuote() {
+        if('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(currentQuote);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert("Text-to-Speech not supported in this browser.");
+        }
+    }
+
+    // Helper to escape HTML
+    function escapeHtml(str) {
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function renderAll() {
+        renderTaskList();
+        renderProgress();
+        renderDashboard();
+        renderReminderUI();
+    }
+
+    // smooth scroll
+    function scrollToSection(sectionId) {
+        const el = document.getElementById(sectionId);
+        if(el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // event listeners
+    document.getElementById("addTaskBtn").addEventListener("click", addTask);
+    document.getElementById("clearAllTasksBtn").addEventListener("click", clearAllTasks);
+    document.getElementById("setReminderBtn").addEventListener("click", setReminder);
+    document.getElementById("newQuoteBtn").addEventListener("click", showRandomQuote);
+    document.getElementById("speakQuoteBtn").addEventListener("click", speakCurrentQuote);
+    document.getElementById("notifyPermMsg").addEventListener("click", requestNotificationPermission);
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const section = btn.getAttribute('data-section');
+            scrollToSection(section);
+        });
+    });
+
+    // initial load
+    loadData();
+    requestNotificationPermission();
+    showRandomQuote();
+</script>
+</body>
+</html>
